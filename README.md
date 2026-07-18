@@ -4,7 +4,7 @@
 
 ### Enterprise Intelligent Document Processing (IDP) Platform for Invoice Staging
 
-**Offline-first invoice ingestion, understanding, extraction, validation, and Oracle staging — no cloud OCR, no API keys, no outbound network dependency.**
+**Offline-first invoice ingestion, understanding, extraction, validation, and Oracle staging - no cloud OCR, no API keys, no outbound network dependency.**
 
 [![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)](#)
 [![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.x-D71F00?logo=sqlalchemy&logoColor=white)](#)
@@ -14,7 +14,7 @@
 [![License](https://img.shields.io/badge/License-Internal%20Use-lightgrey)](#)
 [![Status](https://img.shields.io/badge/Status-Active%20Development-yellow)](#)
 
-*Turn any invoice — scanned, photographed, or born-digital — into clean, staged, ERP-ready data.*
+*Turn any invoice - scanned, photographed, or born-digital - into clean, staged, ERP-ready data.*
 
 </div>
 
@@ -67,7 +67,7 @@ an ERP-agnostic Oracle (or any SQLAlchemy-supported) staging schema.
 It exists to solve one recurring enterprise problem: vendor invoices
 never arrive in one shape. A single AP/AR function typically receives
 scanned paper, phone-camera photos, native digital PDFs, spreadsheets,
-and structured JSON/XML feeds from EDI or e-invoicing partners — and
+and structured JSON/XML feeds from EDI or e-invoicing partners - and
 every one of them ultimately needs to land as a clean, validated row
 that a downstream ERP posting process can consume.
 
@@ -107,13 +107,13 @@ based on what has actually been verified in the codebase (not aspiration):
 | Native PDF text-layer extraction | 🚧 Partial *(documented pipeline; not directly reviewed)* |
 | JSON invoice processing (GSTN e-invoice IRP schema) | ✅ Implemented |
 | XML invoice processing (Sage Company/Invoice schema) | ✅ Implemented |
-| CSV invoice processing | 🚧 Partial — validates & captures, field mapping not yet implemented |
-| Excel invoice processing | 🚧 Partial — validates & captures, field mapping not yet implemented |
+| CSV invoice processing | 🚧 Partial - validates & captures, field mapping not yet implemented |
+| Excel invoice processing | 🚧 Partial - validates & captures, field mapping not yet implemented |
 | JSON-driven Knowledge Engine (aliases, regex, UOM, currency, vendor overrides) | ✅ Implemented |
 | Business-rule-based validation (non-blocking) | ✅ Implemented |
-| Confidence scoring engine | ⏳ Planned — rules file exists (`confidence_rules.json`), not yet wired into extraction |
+| Confidence scoring engine | ⏳ Planned - rules file exists (`confidence_rules.json`), not yet wired into extraction |
 | ERP-agnostic Oracle staging (header/line/error schema) | ✅ Implemented |
-| Built-in ERP connector code (SAP, PeopleSoft, etc.) | ⏳ Not in scope — see [Downstream ERP Consumption](#-downstream-erp-consumption) |
+| Built-in ERP connector code (SAP, PeopleSoft, etc.) | ⏳ Not in scope - see [Downstream ERP Consumption](#-downstream-erp-consumption) |
 | Email notification framework | 🚧 Partial *(documented; not directly reviewed this session)* |
 | Vendor-specific extraction profiles | 🚧 Partial *(documented; not directly reviewed this session)* |
 | Web dashboard | 🚧 Prototype UI exists (`login.html`, `dashboard.html`); backend API wiring not confirmed |
@@ -124,7 +124,7 @@ based on what has actually been verified in the codebase (not aspiration):
 
 Every enterprise that processes vendor invoices eventually hits the
 same wall: invoices arrive in a dozen different shapes, and every one
-of them needs to land in the same place — a clean, validated row in an
+of them needs to land in the same place - a clean, validated row in an
 ERP staging table.
 
 InvoiceLoad's design philosophy, taken directly from its own service
@@ -135,11 +135,11 @@ as auditable rows, not silently dropped and not fatal to the run.
 
 Concretely, this shows up as a hard rule enforced in `staging_service.py`:
 a business-data gap (a missing invoice date, an unparseable PO number)
-is **never** a reason to reject a document — it's defaulted, logged as
+is **never** a reason to reject a document - it's defaulted, logged as
 an `INFO`/`WARNING` message in the error table, and the invoice still
 stages successfully. `ERROR`-severity status is reserved exclusively for
-genuine technical failures — a database error, a malformed file, an
-unhandled exception — never for missing business data on an otherwise
+genuine technical failures - a database error, a malformed file, an
+unhandled exception - never for missing business data on an otherwise
 successfully captured invoice.
 
 ---
@@ -158,7 +158,7 @@ through three iterations before landing on its current design:
 **Landing point:** OCR was decoupled from the extraction engine behind a
 stable `OCRService` contract, and the shipped configuration runs
 PaddleOCR fully local, fully cached, with model directories pinned to
-disk paths and thread counts capped via environment variables — no
+disk paths and thread counts capped via environment variables - no
 outbound network call once models are cached, no API key, no
 subscription.
 
@@ -168,7 +168,7 @@ subscription.
 
 ```mermaid
 flowchart TB
-    subgraph Ingest["📥 Ingest — inputs/&lt;type&gt;/"]
+    subgraph Ingest["📥 Ingest - inputs/&lt;type&gt;/"]
         A1[Image]
         A2[Native PDF]
         A3[Scanned PDF]
@@ -251,7 +251,7 @@ sequenceDiagram
 
 > [!TIP]
 > One failed document **never** stops the batch. Only a truly fatal,
-> unhandled exception (database down, out of memory) ends a run early —
+> unhandled exception (database down, out of memory) ends a run early -
 > and even then, a notification is sent before the process exits.
 
 ---
@@ -274,7 +274,7 @@ At load time, per the project's own documentation, the Knowledge Engine:
 - Validates structure and cross-references (e.g. every vendor's currency must exist in `reference_data.json`)
 - Compiles every regex once, never mid-batch
 - Converts vocabulary lists into frozensets/dicts for O(1) lookups
-- Freezes everything into immutable structures — no document's processing can mutate shared knowledge for the next one
+- Freezes everything into immutable structures - no document's processing can mutate shared knowledge for the next one
 
 <details>
 <summary>📚 <strong>The eight knowledge libraries</strong> (click to expand)</summary>
@@ -284,22 +284,22 @@ At load time, per the project's own documentation, the Knowledge Engine:
 | `field_dictionary.json` | Canonical invoice field names + their aliases across languages/regions |
 | `regex_library.json` | Compiled patterns for invoice #, PO #, GST/VAT/TIN/PAN, IBAN, SWIFT, and similar identifiers |
 | `reference_data.json` | Currencies, units of measure, countries, Incoterms, tax types |
-| `business_rules.json` | Tolerances and thresholds used by the validation layer — single source of truth |
-| `confidence_rules.json` | Scoring weights intended for a confidence-scoring engine — **⏳ not yet wired into extraction** |
+| `business_rules.json` | Tolerances and thresholds used by the validation layer - single source of truth |
+| `confidence_rules.json` | Scoring weights intended for a confidence-scoring engine - **⏳ not yet wired into extraction** |
 | `vendor_profiles.json` | Per-vendor header/regex/layout overrides |
 | `ocr_knowledge.json` | Noise-word lists and known OCR misread substitutions |
 | `system_metadata.json` | Knowledge-base version and file manifest |
 
 > [!NOTE]
 > A top-level `knowledge/` folder (outside `app/`) also exists in this
-> repository but is explicitly marked deprecated — see `DEPRECATED.md`.
+> repository but is explicitly marked deprecated - see `DEPRECATED.md`.
 > Nothing in the running pipeline reads from it; the canonical library is
 > `app/knowledge/`, read exclusively by `KnowledgeManager`.
 
 </details>
 
 **Why this matters:** adding a new field alias, currency, or a vendor's
-column-header quirks is a JSON edit — not a code change, review, or
+column-header quirks is a JSON edit - not a code change, review, or
 redeploy.
 
 ---
@@ -309,10 +309,10 @@ redeploy.
 | Format | Extension(s) | Processor | Uses OCR? | Extraction Status |
 |---|---|---|---|---|
 | 🖼️ Image | `.jpg` `.jpeg` `.png` `.tif` `.tiff` `.bmp` | `ImageProcessor` | ✅ Yes | 🚧 Documented, not directly reviewed this session |
-| 📄 Native PDF | `.pdf` (text layer present) | `NativePDFProcessor` | ❌ No — reads text layer directly | 🚧 Documented, not directly reviewed this session |
+| 📄 Native PDF | `.pdf` (text layer present) | `NativePDFProcessor` | ❌ No - reads text layer directly | 🚧 Documented, not directly reviewed this session |
 | 📄 Scanned PDF | `.pdf` (no text layer) | `ScannedPDFProcessor` | ✅ Yes | 🚧 Documented, not directly reviewed this session |
 | 🧾 JSON | `.json` | `JSONProcessor` | ❌ No | ✅ **Full header + line-item extraction** (GSTN e-invoice IRP schema), confirmed in `staging_service.stage_structured_invoice()` |
-| 🧾 XML | `.xml` | `XMLProcessor` | ❌ No | ✅ **Full header + line-item extraction** (Sage `Company`/`Invoices`/`Invoice` schema — Customer, Invoice, InvoiceItems, Carriage) |
+| 🧾 XML | `.xml` | `XMLProcessor` | ❌ No | ✅ **Full header + line-item extraction** (Sage `Company`/`Invoices`/`Invoice` schema - Customer, Invoice, InvoiceItems, Carriage) |
 | 📊 CSV | `.csv` | `CSVProcessor` | ❌ No | 🚧 Validates & captures content; header/line-item mapping not yet implemented |
 | 📈 Excel | `.xls` `.xlsx` | `ExcelProcessor` | ❌ No | 🚧 Validates & captures content; header/line-item mapping not yet implemented |
 | 🗜️ Archive | `.zip` `.rar`* | `ArchiveProcessor` | Depends on contents | 🚧 Extracts and re-routes contents; `.rar` support listed as planned |
@@ -322,14 +322,14 @@ redeploy.
 > [!TIP]
 > Adding a new document type follows an open/closed pattern by design:
 > one new `DocumentType`, one new processor class, one registration line
-> in the router — nothing else in the pipeline needs to change.
+> in the router - nothing else in the pipeline needs to change.
 
 ---
 
 ## 📥 Oracle Staging Framework
 
-The staging schema is deliberately **ERP-agnostic** — named after
-generic invoice concepts, not any one ERP's tables — so the same
+The staging schema is deliberately **ERP-agnostic** - named after
+generic invoice concepts, not any one ERP's tables - so the same
 pipeline can feed different downstream targets without a rewrite.
 
 ```mermaid
@@ -382,13 +382,13 @@ erDiagram
 |---|---|---|
 | `PENDING` | Transient | Row created, not yet finalized |
 | `LOADED` | This pipeline | Captured & staged, no issues recorded |
-| `WARNING` | This pipeline | Captured & staged, but INFO/WARNING messages exist — **not** a rejection |
+| `WARNING` | This pipeline | Captured & staged, but INFO/WARNING messages exist - **not** a rejection |
 | `VALIDATED` | Downstream service | Passed business validation |
 | `READY` | Downstream service | Ready for ERP injection |
 | `POSTED` / `PROCESSED` | Downstream service | Posted to the target ERP |
-| `ERROR` | This pipeline | System/technical failure only — never a business-data gap |
+| `ERROR` | This pipeline | System/technical failure only - never a business-data gap |
 
-**Mandatory-default policy** — the *only* fields ever auto-defaulted
+**Mandatory-default policy** - the *only* fields ever auto-defaulted
 (everything else is left `NULL` if extraction can't find it, and every
 default is logged as a non-blocking `INFO` note):
 
@@ -411,7 +411,7 @@ default is logged as a non-blocking `INFO` note):
 > integration requirements.
 
 Per the staging schema's own documentation, a separate **downstream
-"meta engine"** — explicitly out of this project's scope — is expected
+"meta engine"** - explicitly out of this project's scope - is expected
 to read rows where `STATUS = 'READY'` and map them onto the AP voucher
 structure of whichever target ERP is in use:
 
@@ -425,7 +425,7 @@ structure of whichever target ERP is in use:
 
 InvoiceLoad's job ends at producing a clean, validated, ERP-agnostic
 staging row (plus a full audit trail of every decision made getting
-there) — not at posting it into a specific ERP.
+there) - not at posting it into a specific ERP.
 
 ---
 
@@ -442,13 +442,13 @@ service dependency (SMTP only):
 | 🟩 Batch succeeded | Clean completion, zero warnings | Green |
 | 🟧 Partial success | Completion with warnings or non-fatal failures | Orange |
 
-Notifications are optional (`SMTP_ENABLED=false` by default) — the
+Notifications are optional (`SMTP_ENABLED=false` by default) - the
 pipeline runs identically and skips sending. A failed SMTP send is
 caught and logged, never raised: email is a side effect, never a
 pipeline dependency.
 
 *(🚧 The notification service source itself wasn't directly reviewed
-this session — this section reflects the project's own documentation.)*
+this session - this section reflects the project's own documentation.)*
 
 ---
 
@@ -461,12 +461,12 @@ operations dashboard, built with Alpine.js and inline styling, with a
 > [!WARNING]
 > These are UI prototypes. Several dashboard values are bound via
 > Alpine's `x-text`/`x-data` to mock in-page data, and no backend API
-> server matching `/api/v1` was available for review — treat this as a
+> server matching `/api/v1` was available for review - treat this as a
 > design reference, not a confirmed live integration.
 
-**Sign-in page** — username/email + password fields, "Welcome back" greeting.
+**Sign-in page** - username/email + password fields, "Welcome back" greeting.
 
-**Dashboard** — left-navigation with:
+**Dashboard** - left-navigation with:
 
 - 📊 Dashboard (overview)
 - ☁️ Upload Documents
@@ -489,16 +489,16 @@ PO numbers…").
 
 ```text
 InvoiceLoad/
-├── main.py                          # batch entry point — no file-type logic
+├── main.py                          # batch entry point - no file-type logic
 ├── app/
 │   ├── core/
-│   │   ├── config.py                 # Settings — every tunable value, env-driven
+│   │   ├── config.py                 # Settings - every tunable value, env-driven
 │   │   ├── database.py               # SQLAlchemy engine/session, init_db()
 │   │   ├── logger.py                 # console + rotating-file logging
-│   │   ├── batch_context.py          # BatchContext — carries batch state to templates
-│   │   ├── startup.py                # initialize_application() — loads Knowledge Engine once
+│   │   ├── batch_context.py          # BatchContext - carries batch state to templates
+│   │   ├── startup.py                # initialize_application() - loads Knowledge Engine once
 │   │   └── knowledge_manager.py      # Singleton Knowledge Engine
-│   ├── knowledge/                    # 🧠 business knowledge, as JSON — never hardcoded
+│   ├── knowledge/                    # 🧠 business knowledge, as JSON - never hardcoded
 │   │   ├── field_dictionary.json
 │   │   ├── regex_library.json
 │   │   ├── reference_data.json
@@ -512,7 +512,7 @@ InvoiceLoad/
 │   ├── repositories/
 │   │   └── staging_repository.py
 │   ├── services/
-│   │   ├── document_router.py        # classify() + route() — single dispatch point
+│   │   ├── document_router.py        # classify() + route() - single dispatch point
 │   │   ├── ocr_service.py            # offline OCR wrapper (images + scanned PDFs)
 │   │   ├── extraction_service.py     # header/line parsing engine
 │   │   ├── validation_service.py     # non-blocking data-capture checks
@@ -539,7 +539,7 @@ InvoiceLoad/
 ├── frontend/
 │   ├── login.html                    # sign-in prototype
 │   └── dashboard.html                # operations dashboard prototype
-├── knowledge/                        # ⚠️ DEPRECATED — see DEPRECATED.md; superseded by app/knowledge/
+├── knowledge/                        # ⚠️ DEPRECATED - see DEPRECATED.md; superseded by app/knowledge/
 ├── inputs/{pdf,image,spreadsheet,json,xml,archive}/
 ├── outputs/{processed,failed}/
 ├── sql/create_staging_tables_oracle_final.sql
@@ -558,7 +558,7 @@ InvoiceLoad/
 
 ## ⚙ Configuration Reference
 
-Every setting has a working default — `.env` only needs to declare what
+Every setting has a working default - `.env` only needs to declare what
 you're overriding.
 
 <details>
@@ -614,7 +614,7 @@ SMTP_USE_TLS=true
 
 > [!CAUTION]
 > `.env` is where real secrets belong. Never commit a filled-in `.env`
-> to source control — rotate any credential that ever leaves your
+> to source control - rotate any credential that ever leaves your
 > machine by accident.
 
 ---
@@ -627,7 +627,7 @@ python -m venv venv
 source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
-# 2. Configure (optional — sane defaults work with zero setup)
+# 2. Configure (optional - sane defaults work with zero setup)
 cp .env.example .env
 
 # 3. Run
@@ -637,7 +637,7 @@ python main.py
 Local development uses **SQLite** out of the box. For production, point
 `DATABASE_URL` at Oracle (or any SQLAlchemy-supported database) and run
 `sql/create_staging_tables_oracle_final.sql` through your normal
-change-control process — remember that adding a new `SourceFileType`
+change-control process - remember that adding a new `SourceFileType`
 enum member (e.g. `XML`) does **not** retroactively alter an existing
 Oracle `CHECK` constraint; that requires its own migration.
 
@@ -662,11 +662,11 @@ python main.py --skip-archive      # skip inputs/archive
 | Production database | Oracle (via `oracledb`), SQLite for local dev |
 | OCR | PaddleOCR, run fully offline with locally cached models |
 | PDF text extraction | pdfplumber / PyMuPDF (per architecture docs) |
-| Email delivery | Standard SMTP — no third-party mail SaaS |
+| Email delivery | Standard SMTP - no third-party mail SaaS |
 | Frontend prototype | Alpine.js, static HTML/CSS |
 
 > [!NOTE]
-> A pinned `requirements.txt` was not available for direct review — the
+> A pinned `requirements.txt` was not available for direct review - the
 > table above lists technologies named explicitly in the project's own
 > documentation, not a dependency-by-dependency audit.
 
@@ -678,9 +678,9 @@ python main.py --skip-archive      # skip inputs/archive
   number, or receipt ID → defaulted, logged as `INFO`, invoice still
   stages as `LOADED`.
 - **`WARNING` status** is used when non-blocking issues exist (e.g. no
-  line items found, header/line total mismatch) — the invoice is still
+  line items found, header/line total mismatch) - the invoice is still
   staged, just flagged for review.
-- **`ERROR` status is reserved for genuine system failures** — a
+- **`ERROR` status is reserved for genuine system failures** - a
   database error, malformed/unreadable file, or unhandled exception.
   It is never used for a business-data gap on an otherwise
   successfully captured invoice.
@@ -699,11 +699,11 @@ python main.py --skip-archive      # skip inputs/archive
 Per the project's architecture documentation, this pipeline is
 purpose-built to run without internet access:
 
-- OCR models are read from local disk paths — no first-run "phone home" to a model host
-- Database can be local SQLite — no cloud database required
-- Email notifications are optional (`SMTP_ENABLED=false`) — the pipeline doesn't need to reach a mail server to function
+- OCR models are read from local disk paths - no first-run "phone home" to a model host
+- Database can be local SQLite - no cloud database required
+- Email notifications are optional (`SMTP_ENABLED=false`) - the pipeline doesn't need to reach a mail server to function
 - No third-party OCR API keys, no per-document billing, no rate limits
-- The Knowledge Engine loads from local JSON — no external configuration service
+- The Knowledge Engine loads from local JSON - no external configuration service
 
 **To deploy air-gapped:** copy the project plus your cached OCR model
 directories onto the target machine, set the `OCR_*_MODEL_DIR`
@@ -715,7 +715,7 @@ variables in `.env` to their local paths, and run.
 
 > [!IMPORTANT]
 > No formal benchmark run was available for this document, so no
-> specific timing numbers are quoted here — a fabricated benchmark
+> specific timing numbers are quoted here - a fabricated benchmark
 > table would be actively misleading in an enterprise-facing README.
 
 Processing time for any given document is a function of:
@@ -737,7 +737,7 @@ estimated figures.
 > No captured screenshots were provided for this document. The
 > [Frontend](#-frontend-prototype-ui) section above describes the
 > actual UI structure found in `login.html` / `dashboard.html`.
-> Placeholders below are intentional — replace with real captures
+> Placeholders below are intentional - replace with real captures
 > before publishing.
 
 | View | Status |
@@ -768,7 +768,7 @@ estimated figures.
 
 **Does this need an internet connection to run?**
 No. Once OCR models are cached locally, the pipeline runs fully offline
-— per the project's own architecture documentation.
+- per the project's own architecture documentation.
 
 **What happens if one invoice fails to process?**
 It's logged, and the batch continues. Business-data gaps are defaulted
@@ -776,11 +776,11 @@ and staged with a `WARNING`; only genuine system failures are recorded
 as `ERROR`.
 
 **Can I add a new invoice field alias or vendor without touching code?**
-Yes, by design — the Knowledge Engine reads from JSON under
+Yes, by design - the Knowledge Engine reads from JSON under
 `app/knowledge/`, not from hardcoded Python.
 
 **Does this post directly into SAP / PeopleSoft / Oracle Fusion?**
-No — see [Downstream ERP Consumption](#-downstream-erp-consumption).
+No - see [Downstream ERP Consumption](#-downstream-erp-consumption).
 InvoiceLoad produces a validated, ERP-agnostic staging row; a separate
 downstream process is responsible for ERP-specific posting.
 
@@ -801,9 +801,9 @@ open-source-licensed software.
 
 ## 🙏 Acknowledgements
 
-- **PaddleOCR** — offline OCR engine
-- **SQLAlchemy** — ORM and database toolkit
-- **Alpine.js** — frontend prototype interactivity
+- **PaddleOCR** - offline OCR engine
+- **SQLAlchemy** - ORM and database toolkit
+- **Alpine.js** - frontend prototype interactivity
 
 ---
 
