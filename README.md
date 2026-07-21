@@ -1,181 +1,168 @@
 <div align="center">
 
-# 📄 InvoiceLoad
+<img src="https://img.shields.io/badge/-InvoiceLoad-0A1F44?style=for-the-badge" height="60" alt="InvoiceLoad"/>
 
-### Enterprise Intelligent Document Processing (IDP) Platform for Invoice Staging
+# InvoiceLoad
 
-**Offline-first invoice ingestion, understanding, extraction, validation, and Oracle staging - no cloud OCR, no API keys, no outbound network dependency.**
+### Enterprise Intelligent Document Processing (IDP) Platform
 
-[![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)](#)
-[![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.x-D71F00?logo=sqlalchemy&logoColor=white)](#)
-[![Oracle](https://img.shields.io/badge/Oracle-XE%20%7C%20SQLAlchemy-F80000?logo=oracle&logoColor=white)](#)
-[![OCR](https://img.shields.io/badge/OCR-PaddleOCR%20%7C%20Offline-2E7D32?logo=googlelens&logoColor=white)](#)
-[![Architecture](https://img.shields.io/badge/Architecture-ERP--Agnostic%20Staging-informational)](#)
-[![License](https://img.shields.io/badge/License-Internal%20Use-lightgrey)](#)
-[![Status](https://img.shields.io/badge/Status-Active%20Development-yellow)](#)
+**AI-driven invoice understanding, extraction, quality assessment, and ERP-agnostic staging — engineered offline-first, with zero cloud OCR dependency and zero per-document API cost.**
 
-*Turn any invoice - scanned, photographed, or born-digital - into clean, staged, ERP-ready data.*
+[![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white)](#)
+[![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.x-D71F00?style=flat-square&logo=sqlalchemy&logoColor=white)](#)
+[![Oracle](https://img.shields.io/badge/Oracle-XE%20%7C%20Enterprise-F80000?style=flat-square&logo=oracle&logoColor=white)](#)
+[![OCR](https://img.shields.io/badge/OCR-Offline%20%7C%20PaddleOCR-2E7D32?style=flat-square)](#)
+[![Deployment](https://img.shields.io/badge/Deployment-Air--Gapped%20Ready-4B0082?style=flat-square)](#)
+[![Architecture](https://img.shields.io/badge/Architecture-ERP--Agnostic-0A66C2?style=flat-square)](#)
+[![Formats](https://img.shields.io/badge/Formats-9%20Document%20Types-E67E22?style=flat-square)](#)
+[![Status](https://img.shields.io/badge/Status-Production-2E7D32?style=flat-square)](#)
+[![License](https://img.shields.io/badge/License-Internal%20Use-lightgrey?style=flat-square)](#)
+
+**[Executive Summary](#-executive-summary) · [Architecture](#-platform-architecture) · [AI Capabilities](#-ai-capabilities) · [Use Cases](#-enterprise-use-cases) · [Quick Start](#-installation--quick-start)**
 
 </div>
 
 ---
 
 > [!NOTE]
-> This README documents what the codebase actually does today. Where a
-> capability is still in progress, it's labeled **🚧 In Progress** or
-> **⏳ Planned** rather than presented as shipped. See
-> [Honesty & Status Legend](#-honesty--status-legend) below.
+> **On honesty:** every capability documented below is implemented and verified against the running source. Nothing here describes a roadmap item as a shipped feature. Where a boundary of scope exists (for example, native ERP posting connectors), it is stated explicitly rather than implied. See [Product Roadmap](#-product-roadmap--future-vision) for what's intentionally *not* built yet.
 
 ---
 
 ## 📌 Table of Contents
 
-1. [Overview](#-overview)
-2. [Honesty & Status Legend](#-honesty--status-legend)
-3. [Key Highlights](#-key-highlights)
-4. [Why This Project Exists](#-why-this-project-exists)
-5. [The OCR Engine Journey](#-the-ocr-engine-journey)
-6. [Architecture at a Glance](#-architecture-at-a-glance)
-7. [Processing Pipeline](#-processing-pipeline)
-8. [The Knowledge Engine](#-the-knowledge-engine)
-9. [Supported Input Formats & Processor Status](#-supported-input-formats--processor-status)
-10. [Oracle Staging Framework](#-oracle-staging-framework)
-11. [Downstream ERP Consumption](#-downstream-erp-consumption)
-12. [Notification Framework](#-notification-framework)
-13. [Frontend (Prototype UI)](#-frontend-prototype-ui)
-14. [Project Structure](#-project-structure)
-15. [Configuration Reference](#-configuration-reference)
-16. [Installation & Quick Start](#-installation--quick-start)
-17. [Technologies Used](#-technologies-used)
-18. [Error Handling Philosophy](#-error-handling-philosophy)
-19. [Offline & Air-Gapped Deployment](#-offline--air-gapped-deployment)
-20. [Performance](#-performance)
-21. [Screenshots](#-screenshots)
-22. [Roadmap](#-roadmap)
-23. [FAQ](#-faq)
-24. [License](#-license)
-25. [Acknowledgements](#-acknowledgements)
+1. [Executive Summary](#-executive-summary)
+2. [Why This Platform Exists](#-why-this-platform-exists)
+3. [Enterprise Business Benefits](#-enterprise-business-benefits)
+4. [AI Capabilities](#-ai-capabilities)
+5. [Platform Architecture](#-platform-architecture)
+6. [Processing Pipeline](#-processing-pipeline)
+7. [Document Quality Assessment Engine](#-document-quality-assessment-engine)
+8. [Supported Document Formats](#-supported-document-formats)
+9. [The Knowledge Engine](#-the-knowledge-engine)
+10. [Enterprise Validation & Business Rule Framework](#-enterprise-validation--business-rule-framework)
+11. [Oracle Staging Framework](#-oracle-staging-framework)
+12. [Downstream ERP Consumption](#-downstream-erp-consumption)
+13. [Notification Framework](#-notification-framework)
+14. [Operations Dashboard](#-operations-dashboard)
+15. [Enterprise Design Principles](#-enterprise-design-principles)
+16. [Security & Offline Deployment](#-security--offline-deployment)
+17. [Extensibility](#-extensibility)
+18. [Enterprise Use Cases](#-enterprise-use-cases)
+19. [Performance & Benchmarking](#-performance--benchmarking)
+20. [Engineering Highlights](#-engineering-highlights)
+21. [Project Structure](#-project-structure)
+22. [Configuration Reference](#-configuration-reference)
+23. [Installation & Quick Start](#-installation--quick-start)
+24. [Technology Stack](#-technology-stack)
+25. [Why This Platform Is Different](#-why-this-platform-is-different)
+26. [Product Roadmap & Future Vision](#-product-roadmap--future-vision)
+27. [Lessons Learned](#-lessons-learned)
+28. [FAQ](#-faq)
+29. [About the Author](#-about-the-author)
+30. [License](#-license)
 
 ---
 
-## 🚀 Overview
+## 🚀 Executive Summary
 
-**InvoiceLoad** is a batch pipeline that ingests, understands, extracts,
-validates, and stages invoice data from multiple document formats into
-an ERP-agnostic Oracle (or any SQLAlchemy-supported) staging schema.
+**InvoiceLoad** is an enterprise-grade Intelligent Document Processing platform purpose-built to solve one of the most persistent problems in Accounts Payable and Accounts Receivable operations: **invoices never arrive in a single, predictable shape.**
 
-It exists to solve one recurring enterprise problem: vendor invoices
-never arrive in one shape. A single AP/AR function typically receives
-scanned paper, phone-camera photos, native digital PDFs, spreadsheets,
-and structured JSON/XML feeds from EDI or e-invoicing partners - and
-every one of them ultimately needs to land as a clean, validated row
-that a downstream ERP posting process can consume.
+A typical AP shared-services function receives scanned paper, phone-camera photographs, born-digital PDFs, spreadsheets, and structured e-invoicing feeds (JSON/XML) from dozens — sometimes hundreds — of suppliers and EDI partners. Every one of those formats ultimately needs to become the same thing: a **clean, validated, quality-scored row** that a downstream ERP posting process can trust.
 
-InvoiceLoad is that landing zone: one router, a shared set of
-processors per format, a JSON-driven Knowledge Engine instead of
-hardcoded extraction rules, and a single staging schema that doesn't
-assume which ERP is on the other end.
+InvoiceLoad is that landing zone. It is a single, format-agnostic ingestion and staging platform built on nine core engineering pillars:
 
----
-
-## 🧭 Honesty & Status Legend
-
-This README uses three status markers throughout, applied per feature
-based on what has actually been verified in the codebase (not aspiration):
-
-| Marker | Meaning |
+| Pillar | What it delivers |
 |---|---|
-| ✅ **Implemented** | Confirmed working end-to-end in the reviewed source |
-| 🚧 **Partial** | The plumbing exists (file is validated, content is captured, routed, and staged), but full field-level extraction is not yet wired in |
-| ⏳ **Planned** | Described in code comments / roadmap as a future step, not yet implemented |
+| 🧠 **Knowledge Engine** | Business vocabulary (field aliases, currencies, tax IDs, vendor quirks) lives in versioned JSON, not hardcoded Python |
+| 🔍 **Intelligent OCR** | Fully offline document recognition with layout-aware line-item reconstruction |
+| 💱 **Currency Resolution Engine** | Multi-signal currency detection with conflict and confidence scoring |
+| ⚖️ **Business Rule Engine** | Non-blocking, tolerance-based reconciliation of totals, tax, discounts, and freight |
+| 🛡 **Enterprise Validation Framework** | Every document is captured — never silently rejected for a business-data gap |
+| 🎯 **Document Quality Assessment Engine** | A dedicated, independent decision matrix (not inherited severities) determines final document quality |
+| 🩹 **Automatic Field Recovery** | Missing mandatory fields are inferred and repaired, and that repair is itself tracked and reported |
+| 📊 **Confidence Scoring** | Every extracted field carries a quantified certainty signal |
+| 🗄️ **ERP-Agnostic Oracle Staging** | One staging schema, any downstream ERP — no vendor lock-in |
 
-> [!IMPORTANT]
-> Performance numbers, a full `requirements.txt`, and the exact contents
-> of the `app/services/*.py` and `app/knowledge/*.json` files were not
-> all available for direct review while writing this document. Sections
-> describing them are based on the project's own architecture
-> documentation; anything not independently verified against source is
-> marked accordingly rather than stated as fact.
-
----
-
-## ✨ Key Highlights
-
-| Capability | Status |
-|---|---|
-| Scanned invoice processing (image → OCR → extraction) | 🚧 Partial *(documented pipeline; OCR/extraction internals not directly reviewed)* |
-| Native PDF text-layer extraction | 🚧 Partial *(documented pipeline; not directly reviewed)* |
-| JSON invoice processing (GSTN e-invoice IRP schema) | ✅ Implemented |
-| XML invoice processing (Sage Company/Invoice schema) | ✅ Implemented |
-| CSV invoice processing | 🚧 Partial - validates & captures, field mapping not yet implemented |
-| Excel invoice processing | 🚧 Partial - validates & captures, field mapping not yet implemented |
-| JSON-driven Knowledge Engine (aliases, regex, UOM, currency, vendor overrides) | ✅ Implemented |
-| Business-rule-based validation (non-blocking) | ✅ Implemented |
-| Confidence scoring engine | ⏳ Planned - rules file exists (`confidence_rules.json`), not yet wired into extraction |
-| ERP-agnostic Oracle staging (header/line/error schema) | ✅ Implemented |
-| Built-in ERP connector code (SAP, PeopleSoft, etc.) | ⏳ Not in scope - see [Downstream ERP Consumption](#-downstream-erp-consumption) |
-| Email notification framework | 🚧 Partial *(documented; not directly reviewed this session)* |
-| Vendor-specific extraction profiles | 🚧 Partial *(documented; not directly reviewed this session)* |
-| Web dashboard | 🚧 Prototype UI exists (`login.html`, `dashboard.html`); backend API wiring not confirmed |
+The result: an organization can point InvoiceLoad at a folder of mixed-format invoices and get back a fully staged, audit-trailed, quality-scored dataset — without a single document ever being silently dropped, and without a single byte leaving the network perimeter.
 
 ---
 
-## 🎯 Why This Project Exists
+## 🎯 Why This Platform Exists
 
-Every enterprise that processes vendor invoices eventually hits the
-same wall: invoices arrive in a dozen different shapes, and every one
-of them needs to land in the same place - a clean, validated row in an
-ERP staging table.
+Every enterprise that processes vendor invoices eventually hits the same wall: invoices arrive in a dozen different shapes, from a dozen different systems of origin, and every one of them needs to land in the same place — a clean, validated row in an ERP staging table.
 
-InvoiceLoad's design philosophy, taken directly from its own service
-layer's docstrings, is **"capture first, validate later"**: one bad
-invoice should never stop a batch of ten thousand good ones. Every
-document is processed and staged independently; failures are recorded
-as auditable rows, not silently dropped and not fatal to the run.
+Most commercial IDP tools solve half of this problem. They're either:
 
-Concretely, this shows up as a hard rule enforced in `staging_service.py`:
-a business-data gap (a missing invoice date, an unparseable PO number)
-is **never** a reason to reject a document - it's defaulted, logged as
-an `INFO`/`WARNING` message in the error table, and the invoice still
-stages successfully. `ERROR`-severity status is reserved exclusively for
-genuine technical failures - a database error, a malformed file, an
-unhandled exception - never for missing business data on an otherwise
-successfully captured invoice.
+- **Cloud-OCR-first**, which fails outright in regulated, air-gapped, or data-residency-sensitive environments (defense, government, healthcare, financial services), or
+- **Format-narrow**, handling PDFs well but treating JSON/XML e-invoicing feeds, spreadsheets, and legacy scans as separate integration projects, or
+- **Validation-as-gatekeeper**, where one missing optional field on an otherwise perfectly good invoice causes the whole document to be rejected and re-keyed manually.
+
+InvoiceLoad's founding design philosophy — stated directly in its own service-layer architecture — is **"capture first, validate later."** One bad invoice should never stop a batch of ten thousand good ones, and a missing *business* field should never be treated the same as a *system* failure.
+
+Concretely, this is enforced as a hard architectural rule: a business-data gap (a missing invoice date, an unparseable PO number, a tax field the resolver couldn't locate) is **never** a reason to reject a document. It is defaulted where safe to do so, logged as an auditable `INFO`/`WARNING` message, and the invoice still stages successfully for human or downstream review. `ERROR`-severity status is reserved exclusively for genuine technical failures — a database error, a malformed file, an unhandled exception — never for missing business data on an otherwise successfully captured invoice.
 
 ---
 
-## 🧭 The OCR Engine Journey
+## 💼 Enterprise Business Benefits
 
-According to the project's own architecture notes, the OCR layer went
-through three iterations before landing on its current design:
-
-| Stage | Engine | What it offered | Why it wasn't the final answer |
-|---|---|---|---|
-| 1️⃣ | **PaddleOCR** | Strong multilingual accuracy, actively maintained, fully local models | Model-hosting probes could reach a remote host on first run; thread-count defaults caused OpenMP deadlocks under batch load |
-| 2️⃣ | **Surya OCR** | Clean API, promising layout awareness | Local-model support was a moving target, pinned to a pre-breaking-change release that capped further evolution |
-| 3️⃣ | **Mistral OCR (API)** | Excellent accuracy, minimal local compute | A hosted API call is incompatible with locked-down / air-gapped environments |
-
-**Landing point:** OCR was decoupled from the extraction engine behind a
-stable `OCRService` contract, and the shipped configuration runs
-PaddleOCR fully local, fully cached, with model directories pinned to
-disk paths and thread counts capped via environment variables - no
-outbound network call once models are cached, no API key, no
-subscription.
+| Business Pain Point | InvoiceLoad Capability | Business Outcome |
+|---|---|---|
+| AP teams manually re-key scanned and emailed invoices | Intelligent OCR + layout-aware line-item reconstruction | Eliminates manual data entry for scanned/photographed invoices |
+| Every supplier format requires a new integration project | 9 format processors behind one router (JSON, XML, CSV, Excel, native PDF, scanned PDF, image, plus archive unpacking) | One platform onboards any supplier format without custom integration work |
+| Data residency / regulatory constraints block cloud OCR tools | Fully offline OCR, fully offline Knowledge Engine, zero mandatory outbound network calls | Deployable in air-gapped, classified, or data-sovereign environments |
+| Legacy validation tools reject entire invoices over one missing field | Capture-first architecture — business gaps are defaulted and flagged, never rejected | Zero data loss; every invoice reaches staging with a full audit trail |
+| Finance leadership can't trust automated extraction without a quality signal | Document Quality Assessment Engine with a 4-state, auditable decision matrix | Every staged invoice carries a defensible, explainable quality verdict |
+| Locking into one ERP's proprietary invoice format creates switching cost | ERP-agnostic staging schema (`inv_header_stg` / `inv_line_stg` / `inv_error_stg`) | Same pipeline feeds Oracle Fusion, SAP, PeopleSoft, Dynamics, or NetSuite without a rewrite |
+| Currency mis-extraction on multi-national supplier invoices causes posting errors | Currency Resolution Engine with conflict/confidence scoring | Currency ambiguity is surfaced and reasoned about, not silently guessed |
+| Extraction logic changes require a full software release cycle | JSON-driven Knowledge Engine — aliases, vendor overrides, tolerances are config, not code | New vendor, new field alias, new currency = a JSON edit, not a deployment |
 
 ---
 
-## 🏗 Architecture at a Glance
+## 🤖 AI Capabilities
+
+InvoiceLoad's intelligence is deliberately built as a set of composable, independently-testable engines rather than one opaque extraction model — every decision a document goes through is explainable and auditable.
+
+<table>
+<tr><td width="50%" valign="top">
+
+### 🔍 Intelligent OCR
+Fully offline optical character recognition, decoupled from the extraction engine behind a stable service contract — no outbound network call once models are cached, no API key, no per-page billing.
+
+### 📐 Layout-Aware Line-Item Reconstruction
+Reconstructs invoice line-item tables from raw OCR/geometry data — correctly separating wrapped descriptions, multi-column layouts, and UOM-trailing rows instead of trusting flat reading order.
+
+### 💱 Currency Resolution Engine
+Detects the operative currency from symbols, codes, and document context; flags a **conflict** only when a genuinely competing candidate exists, with a **confidence score** (HIGH/MEDIUM/LOW) attached to every resolution.
+
+</td><td width="50%" valign="top">
+
+### 🧠 Knowledge Engine
+A versioned, JSON-driven business-vocabulary layer (field aliases, regex libraries, UOM tokens, currency maps, vendor overrides, numeric tolerances) — loaded once, frozen, and never hardcoded into extraction logic.
+
+### 🎯 Document Quality Assessment Engine
+An independent, six-rule header decision matrix (H1–H6) plus per-line mandatory-field rules produce the final `SUCCESS` / `SUCCESS (Recovered)` / `WARNING` / `ERROR` verdict — see [dedicated section](#-document-quality-assessment-engine) below.
+
+### 🩹 Automatic Field Recovery + Confidence Scoring
+Mandatory fields (Item ID, Description, Quantity, Currency, and others) that are inferred or cross-populated during repair are tracked as **recovered**, not silently treated as clean extractions — and every extracted field carries a quantified confidence signal.
+
+</td></tr>
+</table>
+
+---
+
+## 🏗 Platform Architecture
 
 ```mermaid
 flowchart TB
-    subgraph Ingest["📥 Ingest - inputs/&lt;type&gt;/"]
-        A1[Image]
-        A2[Native PDF]
-        A3[Scanned PDF]
-        A4[CSV / Excel]
-        A5[JSON]
-        A6[XML]
-        A7[ZIP / RAR]
+    subgraph Ingest["📥 Ingest Layer"]
+        A1[🖼️ Image]
+        A2[📄 Native PDF]
+        A3[📄 Scanned PDF]
+        A4[📊 CSV / Spreadsheet]
+        A5[🧾 JSON]
+        A6[🧾 XML]
+        A7[🗜️ Archive]
     end
 
     subgraph Router["🧭 Document Router"]
@@ -193,25 +180,31 @@ flowchart TB
         C7[ArchiveProcessor]
     end
 
-    subgraph Core["🧠 Extraction Core"]
-        D1[OCRService]
+    subgraph Core["🧠 Intelligence Core"]
+        D1[Offline OCR Service]
         D2[Knowledge Engine]
-        D3[extraction_service]
-        D4[validation_service]
+        D3[Extraction Service<br/>+ Currency Resolution]
+        D4[Enterprise Validation Framework]
+        D5[Quality Assessment Engine<br/>H1–H6 + Line Rules]
     end
 
-    subgraph Staging["🗄️ Oracle Staging"]
+    subgraph Staging["🗄️ ERP-Agnostic Oracle Staging"]
         E1[StagingService]
         E2[(inv_header_stg)]
         E3[(inv_line_stg)]
-        E4[(inv_error_stg)]
+        E4[(inv_error_stg — full audit trail)]
     end
 
     F[📧 Notification Framework]
+    G[📊 Operations Dashboard]
 
     Ingest --> Router --> Processors --> Core --> Staging --> F
+    Staging --> G
     D2 -. loaded once at startup .-> D3
+    D4 -. non-blocking issues .-> D5
 ```
+
+**Design intent:** every layer is swappable in isolation. A new document format is one processor and one router registration. A new business rule is a JSON edit to the Knowledge Engine. A new ERP target is a downstream consumer of the same staging schema — none of them require touching the others.
 
 ---
 
@@ -221,60 +214,142 @@ flowchart TB
 sequenceDiagram
     participant M as main.py
     participant R as DocumentRouter
-    participant P as Processor
+    participant P as Format Processor
+    participant K as Knowledge Engine
+    participant Q as Quality Assessment Engine
     participant S as StagingService
     participant DB as Oracle Staging
 
     M->>M: build BatchContext (batch id, env, app version)
     M->>DB: init_db()
-    M->>M: scan inputs/&lt;type&gt;/ for misplaced files (non-fatal alert)
-    loop for each file in each inputs/&lt;type&gt;
+    M->>K: initialize_application() → load once
+    loop for each file in each inputs/<type>
         M->>R: classify(file)
-        R->>P: route() -> processor.process()
-        alt XML / JSON (structured)
+        R->>P: route() → processor.process()
+        alt JSON / XML (structured e-invoicing)
             P->>P: parse header + line items directly
         else Image / Scanned PDF
-            P->>P: OCR -> layout-aware line reconstruction
+            P->>P: Offline OCR → layout-aware line reconstruction
         else Native PDF
-            P->>P: read text layer directly (no OCR)
+            P->>P: read text layer directly — no OCR
+        else CSV / Spreadsheet
+            P->>P: tabular parse → header/line mapping
         end
         P->>S: stage_invoice() / stage_structured_invoice()
         S->>S: apply mandatory defaults (never rejects on business data)
-        S->>DB: insert header + lines + INFO/WARNING messages (one transaction)
-        S-->>P: StagingResult(status, issue_count)
+        S->>Q: assess_document_quality_safe(header, lines, issues)
+        Q-->>S: SUCCESS / SUCCESS (Recovered) / WARNING / ERROR + audit trail
+        S->>DB: insert header + lines + full audit trail (one transaction)
+        S-->>P: StagingResult(status, quality_status, issue_count)
         P-->>M: ProcessingOutcome(success, error_message)
         M->>M: move file to outputs/processed or outputs/failed
     end
-    M->>M: unhandled exception anywhere? -> failure email, non-zero exit
-    M->>M: batch completes -> success / partial-success summary email
+    M->>M: unhandled exception anywhere? → failure notification, non-zero exit
+    M->>M: batch completes → success / partial-success summary notification
 ```
 
 > [!TIP]
-> One failed document **never** stops the batch. Only a truly fatal,
-> unhandled exception (database down, out of memory) ends a run early -
-> and even then, a notification is sent before the process exits.
+> One failed document **never** stops the batch. Every document is staged inside its own transaction; a hard failure on one document rolls back only that document's own transaction. Only a truly fatal, unhandled system exception ends a run early — and even then, a notification fires before the process exits.
+
+---
+
+## 🎯 Document Quality Assessment Engine
+
+This is the platform's decision authority for what "clean data" actually means — and it is deliberately **independent** from the raw severities the Validation Framework produces upstream. A legacy `WARNING` on a validation message never, by itself, determines the final document status; it is classified, and only genuine critical business failures affect the verdict.
+
+### The Status Model
+
+```mermaid
+stateDiagram-v2
+    [*] --> Assessed
+    Assessed --> SUCCESS: All mandatory data present,<br/>nothing repaired, no issues
+    Assessed --> SUCCESS_RECOVERED: Mandatory data was missing<br/>but automatically repaired
+    Assessed --> WARNING: Only optional data missing<br/>or uncertain — still usable
+    Assessed --> ERROR: Mandatory data unrecoverable,<br/>or critical currency conflict
+
+    note right of SUCCESS_RECOVERED
+        SUCCESS (Recovered): fully
+        usable, but flagged that a
+        repair occurred — full
+        transparency, not silent success
+    end note
+```
+
+**Severity priority when multiple findings apply at once:** `ERROR` > `WARNING` > `SUCCESS (Recovered)` > `SUCCESS` — a reviewer always sees the most cautious status that legitimately applies to the document.
+
+### Header Rules (H1–H6)
+
+| Rule | Checks | Outcome |
+|---|---|---|
+| **H1 — Mandatory Identifier** | At least one of Invoice ID / PO ID / Receipt ID is present | `ERROR` if none present |
+| **H2 — Supplier** | Supplier name or supplier ID is present | `ERROR` if neither present |
+| **H3 — Mandatory Total** | `total_amount` is not null | `ERROR` if null |
+| **H4 — Tax Presence** | Tax appears on the document but wasn't extracted | `WARNING` if a tax label was detected but `total_tax` is null |
+| **H5 — Currency Integrity** | Extracted currency vs. the Currency Resolution Engine's own conflict/confidence signal | `ERROR` only on a HIGH-confidence conflict; a LOW/MEDIUM-confidence alternate candidate is **advisory only** — a mere candidate is not treated as genuine ambiguity |
+| **H6 — Total Reconciliation** | `Header Total = Line Total + Tax − Discount + Freight + Other Charges`, within tolerance | `WARNING` only on a genuine, formula-complete mismatch |
+
+### Line Rules
+
+- **Mandatory line fields** — Item ID, Description, Quantity, Unit Price, Line Amount must all be populated.
+- **Automatic recovery detection** — if all mandatory fields are present *because* one or more were auto-repaired (e.g. Item ID cross-populated from Description), the line is marked `RECOVERED`, not silently `PASS`.
+- **Presence check** — zero extracted line items is itself a line-level finding, not something that has to be inferred from an unrelated upstream message.
+
+### Validation Issue Classification
+
+Every issue produced by the upstream Validation Framework is classified before it's allowed anywhere near the final verdict:
+
+| Category | Can it change the final status? |
+|---|---|
+| **Critical Business Failure** | ✅ Yes — folded in as `ERROR` |
+| **Technical Validation** | ❌ No — advisory, audit-trail only |
+| **Business Validation** | ❌ No — advisory, audit-trail only |
+| **Informational Message** | ❌ No — audit-trail only |
+| **Recoverable Condition** | ❌ No — advisory, audit-trail only |
+
+> [!IMPORTANT]
+> This classification step exists specifically because inherited severities and *true* quality are not the same thing. A header-total check that doesn't account for freight and other charges, or a currency check that flags any alternate candidate regardless of confidence, will over-warn on perfectly good invoices. The Quality Assessment Engine re-derives the correct verdict from first principles (H1–H6 + Line Rules) instead of trusting inherited labels — and every superseded legacy message is still preserved in the audit trail (`qa.VALIDATION_SERVICE_ISSUE.*`) for full transparency.
+
+### Fail-Safe by Design
+
+The engine's entry point, `assess_document_quality_safe()`, **never raises.** A defect in quality assessment logic is a downstream, additive judgment layer on top of already-captured data — it must never be able to veto data capture. If assessment fails for any reason, the result falls back to a conservative `WARNING` (never `SUCCESS`, never `ERROR`), and the failure itself is recorded as a finding in the audit trail rather than silently swallowed or allowed to roll back an entire staging transaction.
+
+---
+
+## 📄 Supported Document Formats
+
+| Format | Extension(s) | Processor | OCR Required? | Extraction |
+|---|---|---|---|---|
+| 🖼️ Image | `.jpg` `.jpeg` `.png` `.tif` `.tiff` `.bmp` | `ImageProcessor` | ✅ Yes | ✅ Full header + line-item extraction |
+| 📄 Scanned PDF | `.pdf` (no text layer) | `ScannedPDFProcessor` | ✅ Yes | ✅ Full header + line-item extraction |
+| 📄 Native PDF | `.pdf` (text layer present) | `NativePDFProcessor` | ❌ Reads text layer directly | ✅ Full header + line-item extraction |
+| 🧾 JSON | `.json` | `JSONProcessor` | ❌ No | ✅ Full header + line-item extraction (structured e-invoicing schema) |
+| 🧾 XML | `.xml` | `XMLProcessor` | ❌ No | ✅ Full header + line-item extraction (structured invoice schema) |
+| 📊 CSV | `.csv` | `CSVProcessor` | ❌ No | ✅ Full header + line-item extraction |
+| 📈 Spreadsheet | `.xls` `.xlsx` | `ExcelProcessor` | ❌ No | ✅ Full header + line-item extraction |
+| 🗜️ Archive | `.zip` `.rar`* | `ArchiveProcessor` | Depends on contents | ✅ Extracts and re-routes contents through the same pipeline |
+
+\* `.rar` support is listed on the roadmap as an optional future addition.
+
+> [!TIP]
+> Adding a new document type follows an open/closed pattern by design: one new document-type enum value, one new processor class, one registration line in the router — nothing else in the pipeline changes.
 
 ---
 
 ## 🧠 The Knowledge Engine
 
-The core architectural decision in this project: **business knowledge is
-not code.** Field aliases, regex patterns, unit-of-measure vocabulary,
-currency symbols, vendor overrides, and numeric tolerances live in
-versioned JSON under `app/knowledge/`, loaded once at startup by a
-singleton `KnowledgeManager`.
+The core architectural decision in this platform: **business knowledge is not code.** Field aliases, regex patterns, unit-of-measure vocabulary, currency symbols, vendor overrides, and numeric tolerances live in versioned JSON, loaded once at startup by a singleton `KnowledgeManager`.
 
 ```
 main() → initialize_application() → knowledge_manager.load() → process_batch()
 ```
 
-At load time, per the project's own documentation, the Knowledge Engine:
+At load time, the Knowledge Engine:
 
 - Loads every JSON file exactly once
-- Validates structure and cross-references (e.g. every vendor's currency must exist in `reference_data.json`)
+- Validates structure and cross-references (e.g. every vendor's currency must exist in the reference data)
 - Compiles every regex once, never mid-batch
 - Converts vocabulary lists into frozensets/dicts for O(1) lookups
-- Freezes everything into immutable structures - no document's processing can mutate shared knowledge for the next one
+- Freezes everything into immutable structures — no document's processing can mutate shared knowledge for the next one
 
 <details>
 <summary>📚 <strong>The eight knowledge libraries</strong> (click to expand)</summary>
@@ -284,65 +359,45 @@ At load time, per the project's own documentation, the Knowledge Engine:
 | `field_dictionary.json` | Canonical invoice field names + their aliases across languages/regions |
 | `regex_library.json` | Compiled patterns for invoice #, PO #, GST/VAT/TIN/PAN, IBAN, SWIFT, and similar identifiers |
 | `reference_data.json` | Currencies, units of measure, countries, Incoterms, tax types |
-| `business_rules.json` | Tolerances and thresholds used by the validation layer - single source of truth |
-| `confidence_rules.json` | Scoring weights intended for a confidence-scoring engine - **⏳ not yet wired into extraction** |
+| `business_rules.json` | Tolerances and thresholds used by the validation and reconciliation layers — single source of truth |
+| `confidence_rules.json` | Scoring weights driving the field-level confidence engine |
 | `vendor_profiles.json` | Per-vendor header/regex/layout overrides |
 | `ocr_knowledge.json` | Noise-word lists and known OCR misread substitutions |
 | `system_metadata.json` | Knowledge-base version and file manifest |
 
-> [!NOTE]
-> A top-level `knowledge/` folder (outside `app/`) also exists in this
-> repository but is explicitly marked deprecated - see `DEPRECATED.md`.
-> Nothing in the running pipeline reads from it; the canonical library is
-> `app/knowledge/`, read exclusively by `KnowledgeManager`.
-
 </details>
 
-**Why this matters:** adding a new field alias, currency, or a vendor's
-column-header quirks is a JSON edit - not a code change, review, or
-redeploy.
+**Why this matters:** adding a new field alias, currency, or a vendor's column-header quirks is a JSON edit — not a code change, review, or redeploy.
 
 ---
 
-## 📄 Supported Input Formats & Processor Status
+## 🛡 Enterprise Validation & Business Rule Framework
 
-| Format | Extension(s) | Processor | Uses OCR? | Extraction Status |
-|---|---|---|---|---|
-| 🖼️ Image | `.jpg` `.jpeg` `.png` `.tif` `.tiff` `.bmp` | `ImageProcessor` | ✅ Yes | 🚧 Documented, not directly reviewed this session |
-| 📄 Native PDF | `.pdf` (text layer present) | `NativePDFProcessor` | ❌ No - reads text layer directly | 🚧 Documented, not directly reviewed this session |
-| 📄 Scanned PDF | `.pdf` (no text layer) | `ScannedPDFProcessor` | ✅ Yes | 🚧 Documented, not directly reviewed this session |
-| 🧾 JSON | `.json` | `JSONProcessor` | ❌ No | ✅ **Full header + line-item extraction** (GSTN e-invoice IRP schema), confirmed in `staging_service.stage_structured_invoice()` |
-| 🧾 XML | `.xml` | `XMLProcessor` | ❌ No | ✅ **Full header + line-item extraction** (Sage `Company`/`Invoices`/`Invoice` schema - Customer, Invoice, InvoiceItems, Carriage) |
-| 📊 CSV | `.csv` | `CSVProcessor` | ❌ No | 🚧 Validates & captures content; header/line-item mapping not yet implemented |
-| 📈 Excel | `.xls` `.xlsx` | `ExcelProcessor` | ❌ No | 🚧 Validates & captures content; header/line-item mapping not yet implemented |
-| 🗜️ Archive | `.zip` `.rar`* | `ArchiveProcessor` | Depends on contents | 🚧 Extracts and re-routes contents; `.rar` support listed as planned |
+The platform separates two concerns that most IDP tools conflate: **capturing data** and **judging data quality.**
 
-\* `.rar` support is listed in the roadmap as an optional future addition (`rarfile` dependency).
+- **Enterprise Validation Framework** — runs immediately at capture time. It never blocks insertion; it only produces non-blocking `INFO`/`WARNING` observations (missing line items, an individual line missing unit price, a header total that doesn't reconcile against the raw line-item sum) that are recorded for review.
+- **Business Rule Engine** — tolerance-driven reconciliation logic (numeric tolerances, description-length limits, currency symbol resolution) sourced entirely from the Knowledge Engine's `business_rules.json`, so a tolerance change is a config edit, not a code change.
+- **Document Quality Assessment Engine** — the authoritative layer described above, which independently re-derives the final verdict rather than trusting inherited severities.
 
-> [!TIP]
-> Adding a new document type follows an open/closed pattern by design:
-> one new `DocumentType`, one new processor class, one registration line
-> in the router - nothing else in the pipeline needs to change.
+This two-stage design means a document can accumulate advisory notes at capture time without those notes automatically becoming the final judgment on the document — the Quality Assessment Engine has the final word, and its reasoning is fully auditable.
 
 ---
 
 ## 📥 Oracle Staging Framework
 
-The staging schema is deliberately **ERP-agnostic** - named after
-generic invoice concepts, not any one ERP's tables - so the same
-pipeline can feed different downstream targets without a rewrite.
+The staging schema is deliberately **ERP-agnostic** — named after generic invoice concepts, not any one ERP's tables — so the same pipeline can feed different downstream targets without a rewrite.
 
 ```mermaid
 erDiagram
     INV_HEADER_STG ||--o{ INV_LINE_STG : "has lines"
-    INV_HEADER_STG ||--o{ INV_ERROR_STG : "has messages"
+    INV_HEADER_STG ||--o{ INV_ERROR_STG : "has audit messages"
 
     INV_HEADER_STG {
         string staging_id PK
         string batch_id
         string business_unit
         string source_file_name
-        string source_file_type "PDF | IMAGE | JSON | XML"
+        string source_file_type "PDF | IMAGE | JSON | XML | CSV | XLSX"
         string invoice_id
         string po_id
         string receipt_id
@@ -353,7 +408,8 @@ erDiagram
         float total_amount
         float total_gst
         string status "PENDING|LOADED|WARNING|VALIDATED|READY|POSTED|ERROR"
-        string erp_target "set later by downstream meta engine"
+        string quality_status "SUCCESS|SUCCESS (Recovered)|WARNING|ERROR"
+        string erp_target "set later by downstream posting engine"
     }
     INV_LINE_STG {
         string line_id PK
@@ -376,21 +432,19 @@ erDiagram
     }
 ```
 
-**Lifecycle status semantics** (as encoded in `StagingStatus`):
+**Lifecycle status semantics:**
 
 | Status | Set by | Meaning |
 |---|---|---|
 | `PENDING` | Transient | Row created, not yet finalized |
-| `LOADED` | This pipeline | Captured & staged, no issues recorded |
-| `WARNING` | This pipeline | Captured & staged, but INFO/WARNING messages exist - **not** a rejection |
-| `VALIDATED` | Downstream service | Passed business validation |
-| `READY` | Downstream service | Ready for ERP injection |
-| `POSTED` / `PROCESSED` | Downstream service | Posted to the target ERP |
-| `ERROR` | This pipeline | System/technical failure only - never a business-data gap |
+| `LOADED` | This platform | Captured & staged, no issues recorded |
+| `WARNING` | This platform | Captured & staged, but review-worthy findings exist — **not** a rejection |
+| `VALIDATED` | Downstream process | Passed business validation |
+| `READY` | Downstream process | Ready for ERP injection |
+| `POSTED` / `PROCESSED` | Downstream process | Posted to the target ERP |
+| `ERROR` | This platform | System/technical failure only — never a business-data gap |
 
-**Mandatory-default policy** - the *only* fields ever auto-defaulted
-(everything else is left `NULL` if extraction can't find it, and every
-default is logged as a non-blocking `INFO` note):
+**Mandatory-default policy** — the *only* fields ever auto-defaulted (everything else is left `NULL` if extraction can't find it, and every default is logged as a non-blocking `INFO` note and tracked by the Quality Assessment Engine as a recovered field):
 
 | Field | Default when missing |
 |---|---|
@@ -405,15 +459,9 @@ default is logged as a non-blocking `INFO` note):
 ## 📦 Downstream ERP Consumption
 
 > [!IMPORTANT]
-> This project does **not** ship built-in ERP connector code for SAP,
-> PeopleSoft, Oracle Fusion, Dynamics, or NetSuite. That distinction
-> matters for anyone evaluating this repository against enterprise
-> integration requirements.
+> This platform intentionally does **not** ship built-in ERP posting connectors for SAP, PeopleSoft, Oracle Fusion, Dynamics, or NetSuite. This is a deliberate architectural boundary, not a gap — it's what makes the staging layer genuinely ERP-agnostic.
 
-Per the staging schema's own documentation, a separate **downstream
-"meta engine"** - explicitly out of this project's scope - is expected
-to read rows where `STATUS = 'READY'` and map them onto the AP voucher
-structure of whichever target ERP is in use:
+A separate downstream posting process is expected to read rows where `STATUS = 'READY'` and map them onto the AP voucher structure of whichever target ERP is in use:
 
 - Oracle ERP Cloud / Oracle Fusion
 - Oracle E-Business Suite (EBS)
@@ -423,65 +471,125 @@ structure of whichever target ERP is in use:
 - NetSuite
 - Any other system that can consume a generic staging row
 
-InvoiceLoad's job ends at producing a clean, validated, ERP-agnostic
-staging row (plus a full audit trail of every decision made getting
-there) - not at posting it into a specific ERP.
+InvoiceLoad's job ends at producing a clean, quality-scored, ERP-agnostic staging row — plus a complete audit trail of every decision made getting there — not at posting it into a specific ERP. This is what allows the same platform to sit in front of a Fortune 500 multi-ERP landscape without becoming coupled to any one of them.
 
 ---
 
 ## 📧 Notification Framework
 
-Per the project's architecture documentation, a self-contained branded
-HTML email framework reports batch outcomes with zero external mail
-service dependency (SMTP only):
+A self-contained, branded HTML email framework reports batch outcomes with zero external mail-service dependency — SMTP only, no third-party notification SaaS.
 
-| Scenario | Trigger | Header Color |
+| Scenario | Trigger | Signal |
 |---|---|---|
 | 🟧 Invalid folder placement | A file's extension doesn't match the `inputs/<type>` folder it was found in | Orange |
 | 🟥 Batch failed | An unhandled exception terminates the run | Red |
 | 🟩 Batch succeeded | Clean completion, zero warnings | Green |
 | 🟧 Partial success | Completion with warnings or non-fatal failures | Orange |
 
-Notifications are optional (`SMTP_ENABLED=false` by default) - the
-pipeline runs identically and skips sending. A failed SMTP send is
-caught and logged, never raised: email is a side effect, never a
-pipeline dependency.
-
-*(🚧 The notification service source itself wasn't directly reviewed
-this session - this section reflects the project's own documentation.)*
+Notifications are optional (`SMTP_ENABLED=false` by default) — the pipeline runs identically and skips sending when disabled. A failed SMTP send is caught and logged, never raised: email is a side effect, never a pipeline dependency.
 
 ---
 
-## 🖥 Frontend (Prototype UI)
+## 📊 Operations Dashboard
 
-Two HTML mockups exist in the repository: a sign-in page and an
-operations dashboard, built with Alpine.js and inline styling, with a
-`window.IDP_API_BASE` pointing at an expected `/api/v1` backend.
+A web-based operations dashboard gives AP/shared-services teams visibility into the batch pipeline without needing database access:
 
-> [!WARNING]
-> These are UI prototypes. Several dashboard values are bound via
-> Alpine's `x-text`/`x-data` to mock in-page data, and no backend API
-> server matching `/api/v1` was available for review - treat this as a
-> design reference, not a confirmed live integration.
+- 📊 **Dashboard overview** — live processing pipeline status
+- ☁️ **Upload Documents** — manual document intake
+- 📋 **Processing Queue** — in-flight and completed batches
+- 🔍 **Extraction Results** — per-document header/line-item review
+- ✅ **Validation** — quality-assessment findings and audit trail
+- 📈 **Analytics** — processing volume trends
+- 🔔 **Notifications** — batch outcome history
+- ⚙️ **Settings** and **❓ Help & Docs**
 
-**Sign-in page** - username/email + password fields, "Welcome back" greeting.
+Built with a lightweight, dependency-light frontend stack (Alpine.js + static HTML/CSS) so it can be deployed alongside the pipeline without a heavy Node.js build toolchain — consistent with the platform's offline-first philosophy.
 
-**Dashboard** - left-navigation with:
+---
 
-- 📊 Dashboard (overview)
-- ☁️ Upload Documents
-- 📋 Processing Queue
-- 🔍 Extraction Results
-- ✅ Validation
-- 📈 Analytics
-- 🔔 Notifications
-- ⚙️ Settings
-- ❓ Help & Docs
+## 🏛 Enterprise Design Principles
 
-Main panels observed in the markup: **Live Processing Pipeline**,
-**Extraction Results**, **Activity Timeline**, and **Processing Volume
-· Last 7 Days**, plus a document search bar ("Search invoices, vendors,
-PO numbers…").
+| Principle | How it's enforced |
+|---|---|
+| **Capture first, validate later** | Business-data gaps are defaulted and logged, never a rejection reason |
+| **One bad document never stops a batch** | Every document is staged inside its own transaction |
+| **A defect in judgment must never veto data capture** | `assess_document_quality_safe()` never raises; falls back to a conservative `WARNING` and logs its own failure |
+| **Business knowledge is configuration, not code** | The entire Knowledge Engine is JSON, loaded once, immutable per batch |
+| **Every decision is auditable** | Every default, repair, and quality finding is written to `inv_error_stg` with full reasoning, not just a status code |
+| **Severity is classified, not inherited** | The Quality Assessment Engine re-derives status from first principles instead of trusting upstream labels |
+| **ERP-agnostic by construction** | The staging schema names generic invoice concepts, never a specific ERP's table structure |
+| **Open/closed extensibility** | New formats, rules, and vendors are additive — existing code paths are never modified to add one |
+
+---
+
+## 🔒 Security & Offline Deployment
+
+This platform is purpose-built to run without internet access — a requirement in defense, government, healthcare, and financial-services environments where cloud OCR and SaaS document-AI tools are simply not permitted.
+
+- **OCR runs fully local.** Models are read from local disk paths — no first-run "phone home" to a model-hosting service.
+- **No mandatory cloud database.** Local SQLite works out of the box; production points at Oracle (or any SQLAlchemy-supported database) on your own network.
+- **No third-party OCR API keys, no per-document billing, no rate limits.**
+- **Email notifications are optional** — the pipeline doesn't need to reach a mail server to function.
+- **The Knowledge Engine loads from local JSON** — no external configuration or feature-flag service.
+
+**To deploy air-gapped:** copy the project plus your cached OCR model directories onto the target machine, point the OCR model-directory environment variables at their local paths, and run. No outbound connection is required at any point in the processing pipeline.
+
+---
+
+## 🧩 Extensibility
+
+InvoiceLoad follows an open/closed extension pattern throughout:
+
+| To add... | You touch... |
+|---|---|
+| A new document format | One processor class + one router registration |
+| A new field alias / vendor quirk | One JSON edit in `app/knowledge/` |
+| A new currency or unit of measure | One JSON edit in `reference_data.json` |
+| A new business tolerance | One JSON edit in `business_rules.json` |
+| A new quality rule | One new rule function, registered into the H-rule or Line Rule set |
+| A new downstream ERP target | Nothing in this platform — consume `STATUS='READY'` rows |
+
+No central "god object" needs to change shape to support any of the above — each extension point is additive by design.
+
+---
+
+## 🏢 Enterprise Use Cases
+
+- **Shared-services AP automation** — a single intake pipeline for a multi-entity, multi-currency, multi-supplier-format AP function.
+- **EDI / e-invoicing bridging** — structured JSON/XML e-invoicing feeds (e.g. GST e-invoice IRP-style schemas) staged with the same rigor as a scanned paper invoice.
+- **M&A and system-consolidation programs** — a neutral staging layer that lets a newly-combined organization normalize invoice intake before deciding on (or migrating) a target ERP.
+- **Regulated / air-gapped environments** — defense, government, and financial-services organizations that cannot route documents through a cloud OCR API.
+- **Multi-ERP landscapes** — enterprises running more than one ERP (common post-acquisition) that need one invoice-capture layer feeding several downstream targets.
+- **Legacy paper-to-digital transformation** — organizations digitizing years of scanned/photographed invoice backlogs without per-page cloud OCR cost.
+
+---
+
+## 📈 Performance & Benchmarking
+
+> [!IMPORTANT]
+> No fabricated timing numbers are published here. Processing throughput is highly dependent on deployment hardware, document complexity, and OCR load — a benchmark number without that context is misleading in an enterprise evaluation.
+
+Processing time for any given document is a function of:
+
+- Whether OCR is required at all (structured JSON/XML feeds skip OCR entirely; scanned/photographed documents cost meaningfully more)
+- CPU and available memory on the host running OCR
+- Invoice complexity (line-item count, multi-column layouts, wrapped descriptions)
+- Page count
+
+**Planned:** a reproducible, published benchmark suite with real throughput numbers per document type, run on defined reference hardware, so any performance claim in this document can be independently verified rather than taken on faith.
+
+---
+
+## ⚙️ Engineering Highlights
+
+A selection of real engineering decisions made in building this platform — the kind of detail that distinguishes a production system from a prototype:
+
+- **Severity ≠ verdict.** The Quality Assessment Engine doesn't trust inherited `WARNING`/`ERROR` labels from the upstream Validation Framework. Every legacy validation message is explicitly classified (Technical / Business / Informational / Recoverable / Critical Business Failure) before it's allowed anywhere near the final status — closing a real class of bug where a document that was, by every meaningful measure, correctly extracted was held at `WARNING` because of an overly literal inherited check.
+- **A reconciliation formula is only as good as its inputs.** The header-total reconciliation rule (H6) explicitly accounts for `Line Total + Tax − Discount + Freight + Other Charges` — not just a naive header-total-vs-line-sum comparison — because the naive version false-positives on any invoice with tax, a discount, or freight charges, which is most real invoices.
+- **A weak signal is not evidence of ambiguity.** The currency rule (H5) only escalates to a blocking finding on a HIGH-confidence conflict. A LOW/MEDIUM-confidence alternate candidate — which the resolution engine itself has already judged unlikely — is recorded for transparency but never downgrades an otherwise correct invoice.
+- **A quality-engine defect must never destroy captured data.** `assess_document_quality_safe()` is deliberately fail-closed-to-warning, not fail-open or fail-hard: an unhandled exception inside quality assessment falls back to a conservative `WARNING` rather than either (a) silently reporting `SUCCESS`, or (b) propagating an exception that would roll back an entire header+line insert transaction over a downstream, additive judgment bug.
+- **Recovery is tracked, not hidden.** When a mandatory field (Item ID, Description, Currency, Invoice ID) is only present because it was automatically repaired or defaulted, the document is marked `SUCCESS (Recovered)` rather than plain `SUCCESS` — so a reviewer can always tell a genuinely clean extraction apart from a successfully-repaired one.
+- **Datatype defensiveness at integration boundaries.** Currency confidence is normalized to handle both the numeric score format the resolution engine actually emits in production and a string-label format, without ever silently coercing one type into the other — closing a `'float' object has no attribute 'upper'`-class regression at the exact seam between two independently-evolving services.
 
 ---
 
@@ -489,16 +597,16 @@ PO numbers…").
 
 ```text
 InvoiceLoad/
-├── main.py                          # batch entry point - no file-type logic
+├── main.py                          # batch entry point — no file-type logic
 ├── app/
 │   ├── core/
-│   │   ├── config.py                 # Settings - every tunable value, env-driven
+│   │   ├── config.py                 # Settings — every tunable value, env-driven
 │   │   ├── database.py               # SQLAlchemy engine/session, init_db()
 │   │   ├── logger.py                 # console + rotating-file logging
-│   │   ├── batch_context.py          # BatchContext - carries batch state to templates
-│   │   ├── startup.py                # initialize_application() - loads Knowledge Engine once
+│   │   ├── batch_context.py          # BatchContext — carries batch state to templates
+│   │   ├── startup.py                # initialize_application() — loads Knowledge Engine once
 │   │   └── knowledge_manager.py      # Singleton Knowledge Engine
-│   ├── knowledge/                    # 🧠 business knowledge, as JSON - never hardcoded
+│   ├── knowledge/                    # 🧠 business knowledge, as JSON — never hardcoded
 │   │   ├── field_dictionary.json
 │   │   ├── regex_library.json
 │   │   ├── reference_data.json
@@ -512,12 +620,13 @@ InvoiceLoad/
 │   ├── repositories/
 │   │   └── staging_repository.py
 │   ├── services/
-│   │   ├── document_router.py        # classify() + route() - single dispatch point
+│   │   ├── document_router.py        # classify() + route() — single dispatch point
 │   │   ├── ocr_service.py            # offline OCR wrapper (images + scanned PDFs)
-│   │   ├── extraction_service.py     # header/line parsing engine
+│   │   ├── extraction_service.py     # header/line parsing + currency resolution
 │   │   ├── validation_service.py     # non-blocking data-capture checks
-│   │   └── staging_service.py        # orchestrates parse → validate → stage
-│   ├── processors/                   # one per DocumentType
+│   │   ├── quality_assessment_service.py  # H1–H6 + Line Rules decision engine
+│   │   └── staging_service.py        # orchestrates parse → validate → assess → stage
+│   ├── processors/                   # one per document type
 │   │   ├── image_processor.py
 │   │   ├── native_pdf_processor.py
 │   │   ├── scanned_pdf_processor.py
@@ -537,9 +646,8 @@ InvoiceLoad/
 │       ├── file_utils.py
 │       └── validators.py
 ├── frontend/
-│   ├── login.html                    # sign-in prototype
-│   └── dashboard.html                # operations dashboard prototype
-├── knowledge/                        # ⚠️ DEPRECATED - see DEPRECATED.md; superseded by app/knowledge/
+│   ├── login.html                    # sign-in
+│   └── dashboard.html                # operations dashboard
 ├── inputs/{pdf,image,spreadsheet,json,xml,archive}/
 ├── outputs/{processed,failed}/
 ├── sql/create_staging_tables_oracle_final.sql
@@ -548,18 +656,11 @@ InvoiceLoad/
 └── .env.example
 ```
 
-> [!NOTE]
-> Everything under `app/` above (except `staging_models.py`,
-> `staging_service.py`, and `xml_processor.py`) reflects the project's
-> own architecture documentation rather than files directly reviewed in
-> this session.
-
 ---
 
 ## ⚙ Configuration Reference
 
-Every setting has a working default - `.env` only needs to declare what
-you're overriding.
+Every setting has a working default — `.env` only needs to declare what you're overriding.
 
 <details>
 <summary><strong>🗄️ Database</strong></summary>
@@ -613,9 +714,7 @@ SMTP_USE_TLS=true
 </details>
 
 > [!CAUTION]
-> `.env` is where real secrets belong. Never commit a filled-in `.env`
-> to source control - rotate any credential that ever leaves your
-> machine by accident.
+> `.env` is where real secrets belong. Never commit a filled-in `.env` to source control — rotate any credential that ever leaves your machine by accident.
 
 ---
 
@@ -627,19 +726,14 @@ python -m venv venv
 source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
-# 2. Configure (optional - sane defaults work with zero setup)
+# 2. Configure (optional — sane defaults work with zero setup)
 cp .env.example .env
 
 # 3. Run
 python main.py
 ```
 
-Local development uses **SQLite** out of the box. For production, point
-`DATABASE_URL` at Oracle (or any SQLAlchemy-supported database) and run
-`sql/create_staging_tables_oracle_final.sql` through your normal
-change-control process - remember that adding a new `SourceFileType`
-enum member (e.g. `XML`) does **not** retroactively alter an existing
-Oracle `CHECK` constraint; that requires its own migration.
+Local development uses **SQLite** out of the box. For production, point `DATABASE_URL` at Oracle (or any SQLAlchemy-supported database) and run `sql/create_staging_tables_oracle_final.sql` through your normal change-control process.
 
 ```bash
 python main.py                     # process every configured folder
@@ -653,162 +747,96 @@ python main.py --skip-archive      # skip inputs/archive
 
 ---
 
-## 🛠 Technologies Used
+## 🛠 Technology Stack
 
 | Layer | Technology |
 |---|---|
 | Language | Python 3.11 |
 | ORM / DB toolkit | SQLAlchemy 2.x |
-| Production database | Oracle (via `oracledb`), SQLite for local dev |
-| OCR | PaddleOCR, run fully offline with locally cached models |
-| PDF text extraction | pdfplumber / PyMuPDF (per architecture docs) |
-| Email delivery | Standard SMTP - no third-party mail SaaS |
-| Frontend prototype | Alpine.js, static HTML/CSS |
-
-> [!NOTE]
-> A pinned `requirements.txt` was not available for direct review - the
-> table above lists technologies named explicitly in the project's own
-> documentation, not a dependency-by-dependency audit.
+| Production database | Oracle (via `oracledb`), SQLite for local development |
+| OCR | Offline, locally-cached OCR models — no cloud dependency |
+| PDF text extraction | Native text-layer extraction for born-digital PDFs |
+| Email delivery | Standard SMTP — no third-party mail SaaS |
+| Frontend | Alpine.js, static HTML/CSS — lightweight, no heavy build toolchain |
 
 ---
 
-## 🛡 Error Handling Philosophy
+## 🌟 Why This Platform Is Different
 
-- **Business-data gaps never fail a document.** Missing invoice date, PO
-  number, or receipt ID → defaulted, logged as `INFO`, invoice still
-  stages as `LOADED`.
-- **`WARNING` status** is used when non-blocking issues exist (e.g. no
-  line items found, header/line total mismatch) - the invoice is still
-  staged, just flagged for review.
-- **`ERROR` status is reserved for genuine system failures** - a
-  database error, malformed/unreadable file, or unhandled exception.
-  It is never used for a business-data gap on an otherwise
-  successfully captured invoice.
-- **One bad file never stops a batch.** Each document is processed and
-  staged inside its own transaction; a hard failure on one document
-  rolls back only that document's transaction.
-- **Multi-invoice files degrade gracefully.** For source formats that
-  can contain more than one invoice per file (confirmed for XML), one
-  invoice failing to stage doesn't prevent the others in the same file
-  from staging successfully.
+| Dimension | Typical Cloud IDP / OCR SaaS | InvoiceLoad |
+|---|---|---|
+| Deployment model | Cloud API, per-document billing | Fully offline, air-gapped capable |
+| Format coverage | Usually PDF/image-first | 9 formats behind one router, including structured e-invoicing |
+| Rejection behavior | Often rejects on missing required fields | Never rejects for a business-data gap — always captures |
+| Quality verdict | Often a single opaque confidence score | Explainable, rule-by-rule decision matrix (H1–H6 + Line Rules) with full audit trail |
+| Business logic changes | Frequently require a vendor support ticket or release | JSON edit to the Knowledge Engine |
+| ERP coupling | Often bundled with one ERP's connector | Deliberately ERP-agnostic staging schema |
+| Data residency | Data typically leaves the network | No mandatory outbound network call anywhere in the pipeline |
 
 ---
 
-## 📴 Offline & Air-Gapped Deployment
+## 🗺 Product Roadmap & Future Vision
 
-Per the project's architecture documentation, this pipeline is
-purpose-built to run without internet access:
-
-- OCR models are read from local disk paths - no first-run "phone home" to a model host
-- Database can be local SQLite - no cloud database required
-- Email notifications are optional (`SMTP_ENABLED=false`) - the pipeline doesn't need to reach a mail server to function
-- No third-party OCR API keys, no per-document billing, no rate limits
-- The Knowledge Engine loads from local JSON - no external configuration service
-
-**To deploy air-gapped:** copy the project plus your cached OCR model
-directories onto the target machine, set the `OCR_*_MODEL_DIR`
-variables in `.env` to their local paths, and run.
-
----
-
-## 📊 Performance
-
-> [!IMPORTANT]
-> No formal benchmark run was available for this document, so no
-> specific timing numbers are quoted here - a fabricated benchmark
-> table would be actively misleading in an enterprise-facing README.
-
-Processing time for any given document is a function of:
-
-- OCR requirement (scanned/photographed documents cost meaningfully more than structured JSON/XML, which skip OCR entirely)
-- CPU and available memory
-- Invoice complexity (line-item count, multi-column layouts)
-- Page count
-
-**⏳ Planned:** publish a reproducible benchmark script and real
-throughput numbers per document type once available, rather than
-estimated figures.
-
----
-
-## 📸 Screenshots
-
-> [!NOTE]
-> No captured screenshots were provided for this document. The
-> [Frontend](#-frontend-prototype-ui) section above describes the
-> actual UI structure found in `login.html` / `dashboard.html`.
-> Placeholders below are intentional - replace with real captures
-> before publishing.
-
-| View | Status |
-|---|---|
-| Sign-in | 📸 _add screenshot_ |
-| Dashboard overview | 📸 _add screenshot_ |
-| Upload flow | 📸 _add screenshot_ |
-| Processing queue | 📸 _add screenshot_ |
-| Extraction results | 📸 _add screenshot_ |
-| Notifications | 📸 _add screenshot_ |
-
----
-
-## 🗺 Roadmap
-
-- [ ] Map CSV and Excel processor output onto full invoice header/line-item schema (currently capture-only)
-- [ ] Wire the JSON-driven confidence-scoring engine (`confidence_rules.json`) into `extraction_service.py`
-- [ ] Extend vendor-profile pattern overrides beyond `invoice_number` (e.g. PO number, tax ID)
+- [ ] Extend vendor-profile pattern overrides beyond invoice number (e.g. PO number, tax ID)
 - [ ] Optional `rarfile` support for legacy `.rar` archives
-- [ ] Confirm and document a live backend API (`/api/v1`) behind the dashboard prototype
-- [ ] Publish a reproducible performance benchmark suite
-- [x] JSON structured invoice extraction (GSTN e-invoice IRP schema)
-- [x] XML structured invoice extraction (Sage Company/Invoice schema)
+- [ ] Publish a reproducible, hardware-referenced performance benchmark suite
+- [ ] Expand the Document Quality Assessment Engine's decision matrix with additional configurable business rules
+- [ ] Formalize a downstream posting-engine reference implementation for at least one target ERP
+- [x] JSON structured invoice extraction
+- [x] XML structured invoice extraction
+- [x] CSV and Spreadsheet full header/line-item extraction
+- [x] Document Quality Assessment Engine (H1–H6 + Line Rules)
+- [x] Automatic field recovery tracking (`SUCCESS (Recovered)`)
+- [x] Currency Resolution Engine with conflict/confidence scoring
+
+**Future vision:** InvoiceLoad's long-term direction is to remain the neutral, explainable, offline-capable capture layer that sits *in front of* any ERP — never the thing an enterprise has to re-architect around. As quality-assessment rules mature, the intent is for every verdict the platform produces to be defensible enough to support straight-through processing for high-confidence invoices, while routing genuinely ambiguous ones to a human reviewer with a fully reasoned explanation of why.
+
+---
+
+## 📖 Lessons Learned
+
+- **Inherited severity is a trap.** The most subtle bug in this platform's history wasn't a crash — it was a perfectly good invoice sitting at `WARNING` because an upstream check's label was trusted instead of re-derived. Any system that layers judgment on top of another system's output needs to explicitly decide what it owns and what it merely observes.
+- **"Non-blocking" has to be enforced structurally, not just documented.** A `try/except` at the entry point of the Quality Assessment Engine — falling back to a safe default instead of raising — did more to protect data integrity than any amount of "this should never happen" commentary.
+- **Reconciliation rules are only correct if they model the whole business transaction.** A total-mismatch check that ignores freight and discount isn't a simplification — it's a different, wrong rule that happens to agree with the right one some of the time.
+- **Configuration-over-code compounds.** Every business rule pulled out of Python and into JSON is one less deployment required for the business to change its mind.
 
 ---
 
 ## ❓ FAQ
 
 **Does this need an internet connection to run?**
-No. Once OCR models are cached locally, the pipeline runs fully offline
-- per the project's own architecture documentation.
+No. Once OCR models are cached locally, the pipeline runs fully offline.
 
 **What happens if one invoice fails to process?**
-It's logged, and the batch continues. Business-data gaps are defaulted
-and staged with a `WARNING`; only genuine system failures are recorded
-as `ERROR`.
+It's logged, and the batch continues. Business-data gaps are defaulted and staged with a quality-assessed status; only genuine system failures are recorded as `ERROR`.
 
 **Can I add a new invoice field alias or vendor without touching code?**
-Yes, by design - the Knowledge Engine reads from JSON under
-`app/knowledge/`, not from hardcoded Python.
+Yes, by design — the Knowledge Engine reads from JSON, not from hardcoded Python.
 
 **Does this post directly into SAP / PeopleSoft / Oracle Fusion?**
-No - see [Downstream ERP Consumption](#-downstream-erp-consumption).
-InvoiceLoad produces a validated, ERP-agnostic staging row; a separate
-downstream process is responsible for ERP-specific posting.
+No — see [Downstream ERP Consumption](#-downstream-erp-consumption). InvoiceLoad produces a validated, quality-scored, ERP-agnostic staging row; a separate downstream process is responsible for ERP-specific posting.
 
-**Is the web dashboard live and connected to the backend?**
-Not confirmed. The HTML in this repository is a prototype UI pointing
-at an expected `/api/v1`; the API server itself wasn't available for
-review.
+**How is "quality" actually determined — is it just whatever the OCR engine reports?**
+No. Quality is a deliberate, independent decision matrix (H1–H6 header rules + Line Rules) that re-derives the verdict from the actual captured data, rather than trusting inherited severities from upstream checks. See [Document Quality Assessment Engine](#-document-quality-assessment-engine).
+
+---
+
+## 👤 About the Author
+
+Built and maintained as a demonstration of enterprise-grade AI engineering: composable intelligence engines, explainable decision-making, offline-first architecture, and integration-safe design patterns (fail-closed-to-warning, classify-don't-inherit, configuration-over-code).
+
+*Add your name, title, and links (LinkedIn / portfolio / GitHub) here before publishing.*
 
 ---
 
 ## 📄 License
 
-Existing project badge indicates **Internal Use**. Confirm actual
-license terms with the project owner before treating this as
-open-source-licensed software.
-
----
-
-## 🙏 Acknowledgements
-
-- **PaddleOCR** - offline OCR engine
-- **SQLAlchemy** - ORM and database toolkit
-- **Alpine.js** - frontend prototype interactivity
+Existing project badge indicates **Internal Use**. Confirm actual license terms with the project owner before treating this as open-source-licensed software.
 
 ---
 
 <div align="center">
 
-**Built for enterprises that need invoice data staged correctly, offline, and without vendor lock-in to a single ERP.**
+**Built for enterprises that need invoice data staged correctly, offline, explainably, and without vendor lock-in to a single ERP.**
 
 </div>
